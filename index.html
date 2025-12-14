@@ -12,66 +12,57 @@
 
   <style>
     :root{
-      /* Gris “Notion-like” uni */
-      --bg: #F5F5F5;
-
-      /* Texte */
-      --text: #111827;         /* quasi noir */
-      --muted: #6B7280;        /* gris */
-      --muted2: #9CA3AF;       /* gris clair */
-
       /* Pantone 2026 (approx web) */
       --pantone-2026: #F0EEE9;
 
+      /* Texte strict (noir + gris) */
+      --text: #111827;
+      --muted: #6B7280;
+      --muted2: #9CA3AF;
+
       /* Traits */
-      --stroke: rgba(17,24,39,0.10);
-      --strokeSoft: rgba(17,24,39,0.06);
+      --stroke: rgba(17, 24, 39, 0.12);
+      --strokeSoft: rgba(17, 24, 39, 0.08);
     }
 
     *{ box-sizing: border-box; }
-    html, body{ height:100%; }
+
+    /* ✅ Transparent partout : Notion gère le fond */
+    html, body{
+      height: 100%;
+      margin: 0;
+      background: transparent !important;
+    }
 
     body{
-      margin:0;
       font-family: "Inter", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
-      background: var(--bg);       /* ✅ UNI */
       color: var(--text);
-      display:grid;
-      place-items:center;
-      padding: 18px;
+      display: grid;
+      place-items: center;
+      padding: 16px;
     }
 
-    /* Conteneur “flat” : même couleur que le fond, pas d’ombre */
+    /* Conteneur sans fond, sans ombre, sans pseudo-éléments */
     .wrap{
       width: min(980px, 96vw);
-      background: var(--bg);       /* ✅ UNI */
-      border-radius: 18px;
-      border: 1px solid var(--strokeSoft);
-      padding: clamp(16px, 3vw, 28px);
-    }
-
-    /* Ligne Pantone très discrète, sans effet */
-    .pantone-line{
-      height: 2px;
-      width: 100%;
-      background: var(--pantone-2026);
-      border-radius: 999px;
-      opacity: 0.85;
-      margin-bottom: 14px;
+      background: transparent !important; /* ✅ */
+      border: 1px solid var(--strokeSoft); /* simple trait, pas de “surface” */
+      border-radius: 16px;
+      padding: clamp(14px, 2.6vw, 22px);
     }
 
     .top{
       display:flex;
       align-items: baseline;
       justify-content: space-between;
-      gap: 16px;
+      gap: 14px;
       flex-wrap: wrap;
     }
 
     .month{
       font-weight: 900;
       letter-spacing: -0.04em;
-      font-size: clamp(34px, 5vw, 64px);
+      font-size: clamp(32px, 5vw, 58px);
       line-height: 1.03;
       margin: 0;
     }
@@ -79,39 +70,40 @@
     .badge{
       font-weight: 800;
       font-size: 13px;
-      padding: 10px 12px;
+      padding: 9px 12px;
       border-radius: 999px;
-      background: transparent;     /* ✅ UNI (pas de surcouche) */
+      background: transparent !important;   /* ✅ */
       border: 1px solid var(--stroke);
       color: var(--muted);
       white-space: nowrap;
     }
 
     .count{
-      margin-top: 14px;
+      margin-top: 12px;
       font-weight: 900;
       letter-spacing: -0.03em;
       font-variant-numeric: tabular-nums;
-      font-size: clamp(30px, 4.4vw, 54px);
+      font-size: clamp(28px, 4.4vw, 48px);
     }
 
     .grid{
-      margin-top: 14px;
+      margin-top: 12px;
       display:grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 10px;
     }
 
+    /* “pills” sans fond (transparent), uniquement traits */
     .pill{
-      padding: 12px 12px;
+      padding: 12px 10px;
       border-radius: 14px;
-      background: transparent;     /* ✅ UNI */
+      background: transparent !important;   /* ✅ */
       border: 1px solid var(--stroke);
-      text-align:center;
+      text-align: center;
     }
 
     .pill .n{
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 900;
       font-variant-numeric: tabular-nums;
       color: var(--text);
@@ -133,6 +125,18 @@
       font-weight: 800;
       letter-spacing: 0.02em;
       text-transform: uppercase;
+      display:flex;
+      align-items:center;
+      gap:10px;
+    }
+
+    /* Accent Pantone en trait fin (pas de surface, pas de halo) */
+    .pantone{
+      height: 2px;
+      flex: 1;
+      background: var(--pantone-2026);
+      border-radius: 999px;
+      opacity: 0.95;
     }
 
     @media (max-width:640px){
@@ -144,8 +148,6 @@
 
 <body>
   <div class="wrap">
-    <div class="pantone-line"></div>
-
     <div class="top">
       <div class="month" id="monthTitle">—</div>
       <div class="badge" id="deadline">—</div>
@@ -160,7 +162,10 @@
       <div class="pill"><div class="n" id="s">00</div><div class="l">Secondes</div></div>
     </div>
 
-    <div class="sub">Mise à jour chaque seconde — heure locale</div>
+    <div class="sub">
+      <span>Mise à jour chaque seconde — heure locale</span>
+      <span class="pantone"></span>
+    </div>
   </div>
 
   <script>
@@ -180,9 +185,11 @@
       const next = startOfNextMonth(now);
 
       const monthText = fmtMonth.format(now);
-      const monthTitle = monthText.charAt(0).toUpperCase() + monthText.slice(1);
-      document.getElementById('monthTitle').textContent = monthTitle;
-      document.getElementById('deadline').textContent = "Jusqu’au " + fmtDateTime.format(next);
+      document.getElementById('monthTitle').textContent =
+        monthText.charAt(0).toUpperCase() + monthText.slice(1);
+
+      document.getElementById('deadline').textContent =
+        "Jusqu’au " + fmtDateTime.format(next);
 
       const diffMs = Math.max(0, next.getTime() - now.getTime());
       const totalSeconds = Math.floor(diffMs / 1000);

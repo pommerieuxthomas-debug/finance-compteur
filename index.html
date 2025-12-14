@@ -3,77 +3,187 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Compteur Mois</title>
+  <title>Finance — Compteur Mois</title>
+
+  <!-- Typo stricte : Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;700;800;900&display=swap" rel="stylesheet">
+
   <style>
-    :root { color-scheme: dark; }
+    :root{
+      color-scheme: dark;
+
+      /* Base */
+      --black: #000000;
+      --g-950: #0a0a0a;
+      --g-900: #101010;
+      --g-850: #141414;
+      --g-800: #1a1a1a;
+      --g-700: #2a2a2a;
+      --g-600: #3a3a3a;
+
+      /* Pantone Color of the Year 2026 (approx web) */
+      --pantone-2026: #F0EEE9; /* Cloud Dancer */
+
+      /* Accents */
+      --text: rgba(240, 238, 233, 0.92);
+      --muted: rgba(240, 238, 233, 0.62);
+      --muted2: rgba(240, 238, 233, 0.40);
+
+      --ok: #B7FFCF; /* garde ton vert léger, mais plus discret */
+      --ring: rgba(240,238,233,0.12);
+      --stroke: rgba(240,238,233,0.14);
+      --shadow: rgba(0,0,0,0.65);
+    }
+
+    *{ box-sizing: border-box; }
+    html, body{ height:100%; }
+
     body{
-      margin:0; height:100vh; display:grid; place-items:center;
-      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial;
-      background: radial-gradient(1200px 800px at 20% 10%, #1a2a6c33, transparent),
-                  radial-gradient(1200px 800px at 80% 90%, #00c6ff22, transparent),
-                  #0b0f17;
-      color:#eaf0ff;
+      margin:0;
+      font-family: "Inter", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      background:
+        radial-gradient(900px 600px at 20% 15%, rgba(240,238,233,0.06), transparent 60%),
+        radial-gradient(900px 600px at 85% 85%, rgba(240,238,233,0.045), transparent 62%),
+        linear-gradient(180deg, var(--black), var(--g-950) 35%, var(--black));
+      color: var(--text);
+      display:grid;
+      place-items:center;
+      padding: 18px;
     }
+
     .card{
-      width:min(980px, 94vw);
-      padding: clamp(18px, 3vw, 34px);
+      width: min(980px, 96vw);
       border-radius: 24px;
-      background: rgba(255,255,255,0.06);
-      border: 1px solid rgba(255,255,255,0.10);
-      box-shadow: 0 20px 60px rgba(0,0,0,0.45);
+      background:
+        linear-gradient(180deg, rgba(240,238,233,0.07), rgba(240,238,233,0.04)),
+        linear-gradient(180deg, var(--g-950), var(--black));
+      border: 1px solid var(--stroke);
+      box-shadow: 0 24px 70px var(--shadow);
       backdrop-filter: blur(10px);
+      padding: clamp(18px, 3vw, 34px);
+      position: relative;
+      overflow: hidden;
     }
+
+    /* Liseré subtil (Pantone) */
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      border-radius: 26px;
+      padding:2px;
+      background: linear-gradient(135deg,
+        rgba(240,238,233,0.28),
+        rgba(240,238,233,0.06),
+        rgba(240,238,233,0.20)
+      );
+      -webkit-mask:
+        linear-gradient(#000 0 0) content-box,
+        linear-gradient(#000 0 0);
+      -webkit-mask-composite: xor;
+      mask-composite: exclude;
+      pointer-events:none;
+      opacity: 0.85;
+    }
+
     .top{
-      display:flex; align-items:baseline; justify-content:space-between; gap:16px;
-      flex-wrap:wrap;
+      display:flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      position: relative;
+      z-index: 1;
     }
+
     .month{
-      font-weight: 850;
-      letter-spacing: -0.03em;
-      font-size: clamp(34px, 5vw, 64px);
-      line-height: 1.05;
+      font-weight: 900;
+      letter-spacing: -0.04em;
+      font-size: clamp(34px, 5vw, 66px);
+      line-height: 1.03;
+      text-transform: none;
+      color: var(--pantone-2026);
+      text-shadow: 0 10px 26px rgba(0,0,0,0.55);
     }
+
     .badge{
-      font-size: 14px;
-      padding: 8px 12px;
+      font-weight: 700;
+      font-size: 13px;
+      padding: 10px 12px;
       border-radius: 999px;
-      background: rgba(0,198,255,0.12);
-      border: 1px solid rgba(0,198,255,0.25);
-      color: #b9f3ff;
+      background: rgba(240,238,233,0.06);
+      border: 1px solid rgba(240,238,233,0.14);
+      color: var(--muted);
+      white-space: nowrap;
     }
+
     .count{
       margin-top: 18px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
+      font-weight: 900;
+      letter-spacing: -0.03em;
       font-variant-numeric: tabular-nums;
       font-size: clamp(30px, 4.4vw, 56px);
-      color: #b7ffcf;
+      color: var(--ok);
+      text-shadow: 0 10px 30px rgba(0,0,0,0.55);
+      position: relative;
+      z-index: 1;
     }
-    .sub{
-      margin-top: 12px;
-      color: rgba(234,240,255,0.70);
-      font-size: 14px;
-    }
+
     .grid{
       margin-top: 18px;
       display:grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
+      position: relative;
+      z-index: 1;
     }
+
     .pill{
-      padding: 12px 14px;
+      padding: 14px 14px;
       border-radius: 16px;
-      background: rgba(255,255,255,0.05);
-      border: 1px solid rgba(255,255,255,0.08);
+      background:
+        linear-gradient(180deg, rgba(240,238,233,0.06), rgba(240,238,233,0.03));
+      border: 1px solid rgba(240,238,233,0.10);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.45);
       text-align:center;
     }
-    .pill .n{ font-size: 26px; font-weight: 850; font-variant-numeric: tabular-nums; }
-    .pill .l{ font-size: 12px; color: rgba(234,240,255,0.65); margin-top: 4px; }
+
+    .pill .n{
+      font-size: 26px;
+      font-weight: 900;
+      font-variant-numeric: tabular-nums;
+      color: rgba(240,238,233,0.92);
+    }
+
+    .pill .l{
+      font-size: 12px;
+      margin-top: 6px;
+      color: var(--muted2);
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+    }
+
+    .sub{
+      margin-top: 16px;
+      color: var(--muted2);
+      font-size: 12px;
+      font-weight: 700;
+      letter-spacing: 0.02em;
+      text-transform: uppercase;
+      position: relative;
+      z-index: 1;
+    }
+
     @media (max-width:640px){
       .grid{ grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .badge{ width: 100%; text-align: center; }
     }
   </style>
 </head>
+
 <body>
   <div class="card">
     <div class="top">
@@ -84,13 +194,13 @@
     <div class="count" id="countdown">—</div>
 
     <div class="grid">
-      <div class="pill"><div class="n" id="d">0</div><div class="l">jours</div></div>
-      <div class="pill"><div class="n" id="h">00</div><div class="l">heures</div></div>
-      <div class="pill"><div class="n" id="m">00</div><div class="l">minutes</div></div>
-      <div class="pill"><div class="n" id="s">00</div><div class="l">secondes</div></div>
+      <div class="pill"><div class="n" id="d">0</div><div class="l">Jours</div></div>
+      <div class="pill"><div class="n" id="h">00</div><div class="l">Heures</div></div>
+      <div class="pill"><div class="n" id="m">00</div><div class="l">Minutes</div></div>
+      <div class="pill"><div class="n" id="s">00</div><div class="l">Secondes</div></div>
     </div>
 
-    <div class="sub">Mise à jour chaque seconde. Affichage en heure locale.</div>
+    <div class="sub">Mise à jour chaque seconde — heure locale</div>
   </div>
 
   <script>
@@ -103,24 +213,19 @@
     function startOfNextMonth(now){
       return new Date(now.getFullYear(), now.getMonth() + 1, 1, 0, 0, 0, 0);
     }
-
-    function pad2(n){ return String(n).padStart(2, '0'); }
+    const pad2 = (n) => String(n).padStart(2, '0');
 
     function tick(){
       const now = new Date();
       const next = startOfNextMonth(now);
 
-      // titres
       const monthText = fmtMonth.format(now);
       const monthTitle = monthText.charAt(0).toUpperCase() + monthText.slice(1);
       document.getElementById('monthTitle').textContent = monthTitle;
+      document.getElementById('deadline').textContent = "Jusqu’au " + fmtDateTime.format(next);
 
-      document.getElementById('deadline').textContent =
-        "Jusqu’au " + fmtDateTime.format(next);
-
-      // calcul restant
-      let diff = Math.max(0, next.getTime() - now.getTime());
-      const totalSeconds = Math.floor(diff / 1000);
+      const diffMs = Math.max(0, next.getTime() - now.getTime());
+      const totalSeconds = Math.floor(diffMs / 1000);
 
       const days = Math.floor(totalSeconds / 86400);
       const hours = Math.floor((totalSeconds % 86400) / 3600);
